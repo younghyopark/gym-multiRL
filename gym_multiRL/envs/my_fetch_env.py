@@ -12,12 +12,19 @@ def each_axis_difference(goal_a, goal_b, index):
     assert goal_a.shape == goal_b.shape
 #     print('goal shape')
 #     print(goal_a.shape)
-    vec_diff = goal_a - goal_b
-    if vec_diff.ndim==1:
-        diff = vec_diff[index]
-    elif vec_diff.ndim==2:
-        diff = vec_diff[:,index]
-    return diff
+    if index==0:
+        lmbda = np.array([10,1,1])
+    elif index==1:
+        lmbda = np.array([1,10,1])
+    elif index==2:
+        lmbda = np.array([1,1,10])
+
+    d = np.sqrt(np.matmul((goal_a - goal_b)**2,lmbda))
+    # if vec_diff.ndim==1:
+    #     diff = np.abs(vec_diff[index])
+    # elif vec_diff.ndim==2:
+    #     diff = np.abs(vec_diff[:,index])
+    return d
 
 def smooth_reach(goal_a, goal_b, velocity, threshold):
     assert goal_a.shape == goal_b.shape
