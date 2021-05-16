@@ -100,15 +100,16 @@ class FetchEnv(robot_env.RobotEnv):
 #             print(d.shape)
 #             print('d2.shape')
 #             print(each_axis_difference(achieved_goal, goal, 0).shape)
+            sparse_d = (d > self.distance_threshold).astype(np.float32)
             if isinstance(d,np.float64):#d.ndim==1:
                 multi_R = []
-                multi_R.append(np.expand_dims(np.array([d]),axis=1))
+                multi_R.append(np.expand_dims(np.array([sparse_d]),axis=1))
                 multi_R.append(np.expand_dims(np.array([each_axis_difference(achieved_goal, goal, 0)]),axis=1))
                 multi_R.append(np.expand_dims(np.array([each_axis_difference(achieved_goal, goal, 1)]),axis=1))
                 multi_R.append(np.expand_dims(np.array([each_axis_difference(achieved_goal, goal, 2)]),axis=1))
             else:
                 multi_R = []
-                multi_R.append(np.expand_dims(d, axis=1))
+                multi_R.append(np.expand_dims(sparse_d, axis=1))
                 multi_R.append(np.expand_dims(each_axis_difference(achieved_goal, goal, 0),axis=1))
                 multi_R.append(np.expand_dims(each_axis_difference(achieved_goal, goal, 1),axis=1))
                 multi_R.append(np.expand_dims(each_axis_difference(achieved_goal, goal, 2),axis=1))
