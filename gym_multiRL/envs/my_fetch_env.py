@@ -13,11 +13,11 @@ def each_axis_difference(goal_a, goal_b, index):
 #     print('goal shape')
 #     print(goal_a.shape)
     if index==0:
-        lmbda = np.array([10,1,1])
+        lmbda = np.array([100,1,1])
     elif index==1:
-        lmbda = np.array([1,10,1])
+        lmbda = np.array([1,100,1])
     elif index==2:
-        lmbda = np.array([1,1,10])
+        lmbda = np.array([1,1,100])
 
     d = np.sqrt(np.matmul((goal_a - goal_b)**2,lmbda))
     # if vec_diff.ndim==1:
