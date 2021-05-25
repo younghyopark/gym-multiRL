@@ -27,7 +27,7 @@ def each_axis_difference(goal_a, goal_b, index):
     return d
 
 def smooth_reach(goal_a, goal_b, velocity, threshold):
-    assert goal_a.shape == goal_b.shape
+    assert goal_a.shape == goal_b.shapez
     d = goal_distance(goal_a, goal_b)
     if (d > threshold):
         reward=0
