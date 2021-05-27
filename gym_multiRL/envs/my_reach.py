@@ -63,7 +63,7 @@ def each_axis_difference(goal_a, goal_b, index):
     #     goal_a_partial = goal_a[:,(index)*3:(index+1)*3]
     #     goal_b_partial = goal_b[:,(index)*3:(index+1)*3]
     lmbda = np.ones(15)
-    lmbda[3*index:3*index+3]=2000
+    lmbda[3*index:3*index+3]=1e+6
 
     d = np.sqrt(np.matmul((goal_a - goal_b)**2,lmbda))
     # print(d)
