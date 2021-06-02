@@ -26,11 +26,11 @@ def pos_difference(goal_a, goal_b, index):
     delta_pos = goal_a[..., :3] - goal_b[..., :3]
     # print(delta_pos)
     if index==0:
-        lmbda = np.array([100,1,1])
+        lmbda = np.array([1e6,1,1])
     elif index==1:
-        lmbda = np.array([1,100,1])
+        lmbda = np.array([1,1e6,1])
     elif index==2:
-        lmbda = np.array([1,1,100])
+        lmbda = np.array([1,1,1e6])
 
     d = np.sqrt(np.matmul((delta_pos)**2,lmbda))
     # if vec_diff.ndim==1:
@@ -47,13 +47,13 @@ def quat_difference(goal_a, goal_b, index):
     delta_pos = goal_a[..., 3:] - goal_b[..., 3:]
     # print(delta_pos)
     if index==0:
-        lmbda = np.array([100,1,1,1])
+        lmbda = np.array([1e6,1,1,1])
     elif index==1:
-        lmbda = np.array([1,100,1,1])
+        lmbda = np.array([1,1e6,1,1])
     elif index==2:
-        lmbda = np.array([1,1,100,1])
+        lmbda = np.array([1,1,1e6,1])
     elif index==3:
-        lmbda = np.array([1,1,1,100])
+        lmbda = np.array([1,1,1,1e6])
 
     d = np.sqrt(np.matmul(delta_pos**2,lmbda))
     # if vec_diff.ndim==1:
