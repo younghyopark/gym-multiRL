@@ -19,6 +19,47 @@ def quat_from_angle_and_axis(angle, axis):
     quat /= np.linalg.norm(quat)
     return quat
 
+def pos_difference(goal_a, goal_b, index):
+    assert goal_a.shape == goal_b.shape
+#     print('goal shape')
+#     print(goal_a.shape)
+    delta_pos = goal_a[..., :3] - goal_b[..., :3]
+    print(delta_pos)
+    if index==0:
+        lmbda = np.array([100,1,1])
+    elif index==1:
+        lmbda = np.array([1,100,1])
+    elif index==2:
+        lmbda = np.array([1,1,100])
+
+    d = np.sqrt(np.matmul((delta_pos)**2,lmbda))
+    # if vec_diff.ndim==1:
+    #     diff = np.abs(vec_diff[index])
+    # elif vec_diff.ndim==2:
+    #     diff = np.abs(vec_diff[:,index])
+    return d
+
+
+def quat_difference(goal_a, goal_b, index):
+    assert goal_a.shape == goal_b.shape
+#     print('goal shape')
+#     print(goal_a.shape)
+    delta_pos = goal_a[..., 3:] - goal_b[..., 3:]
+    print(delta_pos)
+    if index==0:
+        lmbda = np.array([100,1,1])
+    elif index==1:
+        lmbda = np.array([1,100,1])
+    elif index==2:
+        lmbda = np.array([1,1,100])
+
+    d = np.sqrt(np.matmul(delta_pos**2,lmbda))
+    # if vec_diff.ndim==1:
+    #     diff = np.abs(vec_diff[index])
+    # elif vec_diff.ndim==2:
+    #     diff = np.abs(vec_diff[:,index])
+    return d
+
 
 # Ensure we get the path separator correct on windows
 MANIPULATE_BLOCK_XML = os.path.join('hand', 'manipulate_block.xml')
@@ -68,7 +109,7 @@ class ManipulateEnv(hand_env.HandEnv):
         self.rotation_threshold = rotation_threshold
         self.reward_type = reward_type
         if self.reward_type=='multi':
-            self.num_reward = 2
+            self.num_reward = 6
         else:
             self.num_reward = 1
         self.ignore_z_target_rotation = ignore_z_target_rotation
@@ -129,12 +170,24 @@ class ManipulateEnv(hand_env.HandEnv):
             d_pos, d_rot = self._goal_distance(achieved_goal, goal)
             if isinstance(d_pos,np.float64):#d.ndim==1:
                 multi_R = []
-                multi_R.append(np.expand_dims(np.array([d_pos]),axis=1))
-                multi_R.append(np.expand_dims(np.array([d_rot]),axis=1))
+                # multi_R.append(np.expand_dims(np.array([d_pos]),axis=1))
+                # multi_R.append(np.expand_dims(np.array([d_rot]),axis=1))
+                multi_R.append(np.expand_dims(np.array([pos_difference(achieved_goal, goal, 0)]),axis=1))
+                multi_R.append(np.expand_dims(np.array([pos_difference(achieved_goal, goal, 1)]),axis=1))
+                multi_R.append(np.expand_dims(np.array([pos_difference(achieved_goal, goal, 2)]),axis=1))
+                multi_R.append(np.expand_dims(np.array([quat_difference(achieved_goal, goal, 0)]),axis=1))
+                multi_R.append(np.expand_dims(np.array([quat_difference(achieved_goal, goal, 1)]),axis=1))
+                multi_R.append(np.expand_dims(np.array([quat_difference(achieved_goal, goal, 2)]),axis=1))
             else:
                 multi_R = []
-                multi_R.append(np.expand_dims(d_pos,axis=1))
-                multi_R.append(np.expand_dims(d_rot,axis=1))
+                # multi_R.append(np.expand_dims(d_pos,axis=1))
+                # multi_R.append(np.expand_dims(d_rot,axis=1))
+                multi_R.append(np.expand_dims(pos_difference(achieved_goal, goal, 0),axis=1))
+                multi_R.append(np.expand_dims(pos_difference(achieved_goal, goal, 1),axis=1))
+                multi_R.append(np.expand_dims(pos_difference(achieved_goal, goal, 2),axis=1))
+                multi_R.append(np.expand_dims(quat_difference(achieved_goal, goal, 0),axis=1))
+                multi_R.append(np.expand_dims(quat_difference(achieved_goal, goal, 1),axis=1))
+                multi_R.append(np.expand_dims(quat_difference(achieved_goal, goal, 2),axis=1))
             # print(np.concatenate(multi_R,1).shape)
             return -np.concatenate(multi_R,1)
 
