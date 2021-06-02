@@ -67,6 +67,10 @@ class ManipulateEnv(hand_env.HandEnv):
         self.distance_threshold = distance_threshold
         self.rotation_threshold = rotation_threshold
         self.reward_type = reward_type
+        if self.reward_type=='multi':
+            self.num_reward = 2
+        else:
+            self.num_reward = 1
         self.ignore_z_target_rotation = ignore_z_target_rotation
 
         assert self.target_position in ['ignore', 'fixed', 'random']
@@ -121,6 +125,20 @@ class ManipulateEnv(hand_env.HandEnv):
         if self.reward_type == 'sparse':
             success = self._is_success(achieved_goal, goal).astype(np.float32)
             return (success - 1.)
+        elif self.reward_type == 'multi':
+            d_pos, d_rot = self._goal_distance(achieved_goal, goal)
+            if isinstance(d_pos,np.float64):#d.ndim==1:
+                multi_R = []
+                multi_R.append(np.expand_dims(np.array([d_pos]),axis=1))
+                multi_R.append(np.expand_dims(np.array([d_rot]),axis=1))
+            else:
+                multi_R = []
+                multi_R.append(np.expand_dims(d_pos,axis=1))
+                multi_R.append(np.expand_dims(d_rot,axis=1))
+            # print(np.concatenate(multi_R,1).shape)
+            return -np.concatenate(multi_R,1)
+
+
         else:
             d_pos, d_rot = self._goal_distance(achieved_goal, goal)
             # We weigh the difference in position to avoid that `d_pos` (in meters) is completely
