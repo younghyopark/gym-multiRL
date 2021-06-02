@@ -18,6 +18,22 @@ def quat_from_angle_and_axis(angle, axis):
     quat = np.concatenate([[np.cos(angle / 2.)], np.sin(angle / 2.) * axis])
     quat /= np.linalg.norm(quat)
     return quat
+    
+def each_axis_difference(goal_a, goal_b, index):
+    assert goal_a.shape == goal_b.shape
+#     print('goal shape')
+#     print(goal_a.shape)
+    # if index==0:
+    #     lmbda = np.array([100,1,1])
+    # elif index==1:
+    #     lmbda = np.array([1,100,1])
+    # elif index==2:
+    #     lmbda = np.array([1,1,100])
+    lmbda = np.ones(7)
+    lmbda[index]=1e6
+    d = np.sqrt(np.matmul((goal_a - goal_b)**2,lmbda))
+
+    return d
 
 def pos_difference(goal_a, goal_b, index):
     assert goal_a.shape == goal_b.shape
@@ -174,24 +190,24 @@ class ManipulateEnv(hand_env.HandEnv):
                 multi_R = []
                 # multi_R.append(np.expand_dims(np.array([d_pos]),axis=1))
                 # multi_R.append(np.expand_dims(np.array([d_rot]),axis=1))
-                multi_R.append(np.expand_dims(np.array([pos_difference(achieved_goal, goal, 0)]),axis=1))
-                multi_R.append(np.expand_dims(np.array([pos_difference(achieved_goal, goal, 1)]),axis=1))
-                multi_R.append(np.expand_dims(np.array([pos_difference(achieved_goal, goal, 2)]),axis=1))
-                multi_R.append(np.expand_dims(np.array([quat_difference(achieved_goal, goal, 0)]),axis=1))
-                multi_R.append(np.expand_dims(np.array([quat_difference(achieved_goal, goal, 1)]),axis=1))
-                multi_R.append(np.expand_dims(np.array([quat_difference(achieved_goal, goal, 2)]),axis=1))
-                multi_R.append(np.expand_dims(np.array([quat_difference(achieved_goal, goal, 3)]),axis=1))
+                multi_R.append(np.expand_dims(np.array([each_axis_difference(achieved_goal, goal, 0)]),axis=1))
+                multi_R.append(np.expand_dims(np.array([each_axis_difference(achieved_goal, goal, 1)]),axis=1))
+                multi_R.append(np.expand_dims(np.array([each_axis_difference(achieved_goal, goal, 2)]),axis=1))
+                multi_R.append(np.expand_dims(np.array([each_axis_difference(achieved_goal, goal, 3)]),axis=1))
+                multi_R.append(np.expand_dims(np.array([each_axis_difference(achieved_goal, goal, 4)]),axis=1))
+                multi_R.append(np.expand_dims(np.array([each_axis_difference(achieved_goal, goal, 5)]),axis=1))
+                multi_R.append(np.expand_dims(np.array([each_axis_difference(achieved_goal, goal, 6)]),axis=1))
             else:
                 multi_R = []
                 # multi_R.append(np.expand_dims(d_pos,axis=1))
                 # multi_R.append(np.expand_dims(d_rot,axis=1))
-                multi_R.append(np.expand_dims(pos_difference(achieved_goal, goal, 0),axis=1))
-                multi_R.append(np.expand_dims(pos_difference(achieved_goal, goal, 1),axis=1))
-                multi_R.append(np.expand_dims(pos_difference(achieved_goal, goal, 2),axis=1))
-                multi_R.append(np.expand_dims(quat_difference(achieved_goal, goal, 0),axis=1))
-                multi_R.append(np.expand_dims(quat_difference(achieved_goal, goal, 1),axis=1))
-                multi_R.append(np.expand_dims(quat_difference(achieved_goal, goal, 2),axis=1))
-                multi_R.append(np.expand_dims(quat_difference(achieved_goal, goal, 3),axis=1))
+                multi_R.append(np.expand_dims(each_axis_difference(achieved_goal, goal, 0),axis=1))
+                multi_R.append(np.expand_dims(each_axis_difference(achieved_goal, goal, 1),axis=1))
+                multi_R.append(np.expand_dims(each_axis_difference(achieved_goal, goal, 2),axis=1))
+                multi_R.append(np.expand_dims(each_axis_difference(achieved_goal, goal, 3),axis=1))
+                multi_R.append(np.expand_dims(each_axis_difference(achieved_goal, goal, 4),axis=1))
+                multi_R.append(np.expand_dims(each_axis_difference(achieved_goal, goal, 5),axis=1))
+                multi_R.append(np.expand_dims(each_axis_difference(achieved_goal, goal, 6),axis=1))
             # print(np.concatenate(multi_R,1).shape)
             return -np.concatenate(multi_R,1)
 
