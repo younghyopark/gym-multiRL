@@ -24,7 +24,7 @@ def pos_difference(goal_a, goal_b, index):
 #     print('goal shape')
 #     print(goal_a.shape)
     delta_pos = goal_a[..., :3] - goal_b[..., :3]
-    print(delta_pos)
+    # print(delta_pos)
     if index==0:
         lmbda = np.array([100,1,1])
     elif index==1:
@@ -45,7 +45,7 @@ def quat_difference(goal_a, goal_b, index):
 #     print('goal shape')
 #     print(goal_a.shape)
     delta_pos = goal_a[..., 3:] - goal_b[..., 3:]
-    print(delta_pos)
+    # print(delta_pos)
     if index==0:
         lmbda = np.array([100,1,1,1])
     elif index==1:
@@ -54,7 +54,7 @@ def quat_difference(goal_a, goal_b, index):
         lmbda = np.array([1,1,100,1])
     elif index==3:
         lmbda = np.array([1,1,1,100])
-        
+
     d = np.sqrt(np.matmul(delta_pos**2,lmbda))
     # if vec_diff.ndim==1:
     #     diff = np.abs(vec_diff[index])
@@ -111,7 +111,7 @@ class ManipulateEnv(hand_env.HandEnv):
         self.rotation_threshold = rotation_threshold
         self.reward_type = reward_type
         if self.reward_type=='multi':
-            self.num_reward = 6
+            self.num_reward = 7
         else:
             self.num_reward = 1
         self.ignore_z_target_rotation = ignore_z_target_rotation
@@ -180,6 +180,7 @@ class ManipulateEnv(hand_env.HandEnv):
                 multi_R.append(np.expand_dims(np.array([quat_difference(achieved_goal, goal, 0)]),axis=1))
                 multi_R.append(np.expand_dims(np.array([quat_difference(achieved_goal, goal, 1)]),axis=1))
                 multi_R.append(np.expand_dims(np.array([quat_difference(achieved_goal, goal, 2)]),axis=1))
+                multi_R.append(np.expand_dims(np.array([quat_difference(achieved_goal, goal, 3)]),axis=1))
             else:
                 multi_R = []
                 # multi_R.append(np.expand_dims(d_pos,axis=1))
@@ -190,6 +191,7 @@ class ManipulateEnv(hand_env.HandEnv):
                 multi_R.append(np.expand_dims(quat_difference(achieved_goal, goal, 0),axis=1))
                 multi_R.append(np.expand_dims(quat_difference(achieved_goal, goal, 1),axis=1))
                 multi_R.append(np.expand_dims(quat_difference(achieved_goal, goal, 2),axis=1))
+                multi_R.append(np.expand_dims(quat_difference(achieved_goal, goal, 3),axis=1))
             # print(np.concatenate(multi_R,1).shape)
             return -np.concatenate(multi_R,1)
 
