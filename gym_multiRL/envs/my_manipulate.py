@@ -127,7 +127,7 @@ class ManipulateEnv(hand_env.HandEnv):
         self.rotation_threshold = rotation_threshold
         self.reward_type = reward_type
         if self.reward_type=='multi':
-            self.num_reward = 7
+            self.num_reward = 2
         else:
             self.num_reward = 1
         self.ignore_z_target_rotation = ignore_z_target_rotation
@@ -190,24 +190,24 @@ class ManipulateEnv(hand_env.HandEnv):
                 multi_R = []
                 # multi_R.append(np.expand_dims(np.array([d_pos]),axis=1))
                 # multi_R.append(np.expand_dims(np.array([d_rot]),axis=1))
-                multi_R.append(np.expand_dims(np.array([each_axis_difference(achieved_goal, goal, 0)]),axis=1))
-                multi_R.append(np.expand_dims(np.array([each_axis_difference(achieved_goal, goal, 1)]),axis=1))
-                multi_R.append(np.expand_dims(np.array([each_axis_difference(achieved_goal, goal, 2)]),axis=1))
-                multi_R.append(np.expand_dims(np.array([each_axis_difference(achieved_goal, goal, 3)]),axis=1))
-                multi_R.append(np.expand_dims(np.array([each_axis_difference(achieved_goal, goal, 4)]),axis=1))
-                multi_R.append(np.expand_dims(np.array([each_axis_difference(achieved_goal, goal, 5)]),axis=1))
-                multi_R.append(np.expand_dims(np.array([each_axis_difference(achieved_goal, goal, 6)]),axis=1))
+                multi_R.append(np.expand_dims(np.array([each_axis_difference(achieved_goal, goal, [0,1,2])]),axis=1))
+                multi_R.append(np.expand_dims(np.array([each_axis_difference(achieved_goal, goal, [3,4,5,6])]),axis=1))
+                # multi_R.append(np.expand_dims(np.array([each_axis_difference(achieved_goal, goal, 2)]),axis=1))
+                # multi_R.append(np.expand_dims(np.array([each_axis_difference(achieved_goal, goal, 3)]),axis=1))
+                # multi_R.append(np.expand_dims(np.array([each_axis_difference(achieved_goal, goal, 4)]),axis=1))
+                # multi_R.append(np.expand_dims(np.array([each_axis_difference(achieved_goal, goal, 5)]),axis=1))
+                # multi_R.append(np.expand_dims(np.array([each_axis_difference(achieved_goal, goal, 6)]),axis=1))
             else:
                 multi_R = []
                 # multi_R.append(np.expand_dims(d_pos,axis=1))
                 # multi_R.append(np.expand_dims(d_rot,axis=1))
-                multi_R.append(np.expand_dims(each_axis_difference(achieved_goal, goal, 0),axis=1))
-                multi_R.append(np.expand_dims(each_axis_difference(achieved_goal, goal, 1),axis=1))
-                multi_R.append(np.expand_dims(each_axis_difference(achieved_goal, goal, 2),axis=1))
-                multi_R.append(np.expand_dims(each_axis_difference(achieved_goal, goal, 3),axis=1))
-                multi_R.append(np.expand_dims(each_axis_difference(achieved_goal, goal, 4),axis=1))
-                multi_R.append(np.expand_dims(each_axis_difference(achieved_goal, goal, 5),axis=1))
-                multi_R.append(np.expand_dims(each_axis_difference(achieved_goal, goal, 6),axis=1))
+                multi_R.append(np.expand_dims(each_axis_difference(achieved_goal, goal, [0,1,2]),axis=1))
+                multi_R.append(np.expand_dims(each_axis_difference(achieved_goal, goal, [3,4,5,6]),axis=1))
+                # multi_R.append(np.expand_dims(each_axis_difference(achieved_goal, goal, 2),axis=1))
+                # multi_R.append(np.expand_dims(each_axis_difference(achieved_goal, goal, 3),axis=1))
+                # multi_R.append(np.expand_dims(each_axis_difference(achieved_goal, goal, 4),axis=1))
+                # multi_R.append(np.expand_dims(each_axis_difference(achieved_goal, goal, 5),axis=1))
+                # multi_R.append(np.expand_dims(each_axis_difference(achieved_goal, goal, 6),axis=1))
             # print(np.concatenate(multi_R,1).shape)
             return -np.concatenate(multi_R,1)
 
