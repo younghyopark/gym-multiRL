@@ -19,7 +19,7 @@ def quat_from_angle_and_axis(angle, axis):
     quat /= np.linalg.norm(quat)
     return quat
     
-def each_axis_difference(goal_a, goal_b, index):
+def each_axis_difference(goal_a, goal_b, index, coef=100):
     assert goal_a.shape == goal_b.shape
 #     print('goal shape')
 #     print(goal_a.shape)
@@ -30,7 +30,7 @@ def each_axis_difference(goal_a, goal_b, index):
     # elif index==2:
     #     lmbda = np.array([1,1,100])
     lmbda = np.ones(7)
-    lmbda[index]=1e6
+    lmbda[index]=coef
     d = np.sqrt(np.matmul((goal_a - goal_b)**2,lmbda))
 
     return d
@@ -190,8 +190,8 @@ class ManipulateEnv(hand_env.HandEnv):
                 multi_R = []
                 # multi_R.append(np.expand_dims(np.array([d_pos]),axis=1))
                 # multi_R.append(np.expand_dims(np.array([d_rot]),axis=1))
-                multi_R.append(np.expand_dims(np.array([each_axis_difference(achieved_goal, goal, [0,1,2])]),axis=1))
-                multi_R.append(np.expand_dims(np.array([each_axis_difference(achieved_goal, goal, [3,4,5,6])]),axis=1))
+                multi_R.append(np.expand_dims(np.array([each_axis_difference(achieved_goal, goal, [0,1,2], 1e6)]),axis=1))
+                multi_R.append(np.expand_dims(np.array([each_axis_difference(achieved_goal, goal, [3,4,5,6], 1e2)]),axis=1))
                 # multi_R.append(np.expand_dims(np.array([each_axis_difference(achieved_goal, goal, 2)]),axis=1))
                 # multi_R.append(np.expand_dims(np.array([each_axis_difference(achieved_goal, goal, 3)]),axis=1))
                 # multi_R.append(np.expand_dims(np.array([each_axis_difference(achieved_goal, goal, 4)]),axis=1))
@@ -201,8 +201,8 @@ class ManipulateEnv(hand_env.HandEnv):
                 multi_R = []
                 # multi_R.append(np.expand_dims(d_pos,axis=1))
                 # multi_R.append(np.expand_dims(d_rot,axis=1))
-                multi_R.append(np.expand_dims(each_axis_difference(achieved_goal, goal, [0,1,2]),axis=1))
-                multi_R.append(np.expand_dims(each_axis_difference(achieved_goal, goal, [3,4,5,6]),axis=1))
+                multi_R.append(np.expand_dims(each_axis_difference(achieved_goal, goal, [0,1,2], 1e6),axis=1))
+                multi_R.append(np.expand_dims(each_axis_difference(achieved_goal, goal, [3,4,5,6], 1e2),axis=1))
                 # multi_R.append(np.expand_dims(each_axis_difference(achieved_goal, goal, 2),axis=1))
                 # multi_R.append(np.expand_dims(each_axis_difference(achieved_goal, goal, 3),axis=1))
                 # multi_R.append(np.expand_dims(each_axis_difference(achieved_goal, goal, 4),axis=1))
