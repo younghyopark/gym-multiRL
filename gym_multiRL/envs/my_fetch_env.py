@@ -12,13 +12,16 @@ def each_axis_difference(goal_a, goal_b, index):
     assert goal_a.shape == goal_b.shape
 #     print('goal shape')
 #     print(goal_a.shape)
-    if index==0:
-        lmbda = np.array([100,1,1])
-    elif index==1:
-        lmbda = np.array([1,100,1])
-    elif index==2:
-        lmbda = np.array([1,1,100])
-
+    # if index==0:
+    #     lmbda = np.array([1,1,1])
+    lmbda = np.ones(3)
+    lmbda[index]=1e2
+    # if index==1:
+    #     lmbda = np.array([100,1,1])
+    # elif index==2:
+    #     lmbda = np.array([1,100,1])
+    # elif index==3:
+    #     lmbda = np.array([1,1,100])
     d = np.sqrt(np.matmul((goal_a - goal_b)**2,lmbda))
     # if vec_diff.ndim==1:
     #     diff = np.abs(vec_diff[index])
@@ -104,15 +107,14 @@ class FetchEnv(robot_env.RobotEnv):
             if isinstance(d,np.float64):#d.ndim==1:
                 multi_R = []
                 # multi_R.append(np.expand_dims(np.array([sparse_d]),axis=1))
-                multi_R.append(np.expand_dims(np.array([each_axis_difference(achieved_goal, goal, 0)]),axis=1))
-                multi_R.append(np.expand_dims(np.array([each_axis_difference(achieved_goal, goal, 1)]),axis=1))
-                multi_R.append(np.expand_dims(np.array([each_axis_difference(achieved_goal, goal, 2)]),axis=1))
+                for i in range(self.num_reward):
+                    multi_R.append(np.expand_dims(np.array([each_axis_difference(achieved_goal, goal, i)]),axis=1))
             else:
                 multi_R = []
                 # multi_R.append(np.expand_dims(sparse_d, axis=1))
-                multi_R.append(np.expand_dims(each_axis_difference(achieved_goal, goal, 0),axis=1))
-                multi_R.append(np.expand_dims(each_axis_difference(achieved_goal, goal, 1),axis=1))
-                multi_R.append(np.expand_dims(each_axis_difference(achieved_goal, goal, 2),axis=1))
+                for i in range(self.num_reward):
+                    multi_R.append(np.expand_dims(each_axis_difference(achieved_goal, goal, i),axis=1))
+
 #             multi_R.append(smooth_reach(achieved_goal, goal, info['velocity'], self.distance_threshold))
 #             print(np.stack(multi_R).shape)
             return -np.concatenate(multi_R,1)
